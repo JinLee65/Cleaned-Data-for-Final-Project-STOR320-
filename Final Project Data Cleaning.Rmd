@@ -1,0 +1,101 @@
+---
+title: "Final Project Data Cleaning"
+output: html_document
+date: "2024-03-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)    #Essential Functions
+library(rvest)        #Read Tables From Webpages
+library(noncensus)
+library(readr)
+library(knitr) 
+```
+
+```{r}
+EFI <- read_csv(file = "economic_freedom_index2019_data.csv")
+```
+
+#Data clean part 1 - drop redundant variables
+
+```{r}
+EFI2 <- EFI %>%
+  select(-"CountryID", -"WEBNAME", -"Region") %>%
+  rename("Country_Name" = "Country Name",
+         "World_Rank" = "World Rank",
+         "Region_Rank" = "Region Rank",
+         "2019_Score" = "2019 Score",
+         "Property_Rights" = "Property Rights",
+         "Judical_Effectiveness" = "Judical Effectiveness",
+         "Government_Integrity" = "Government Integrity",
+         "Tax_Burden" = "Tax Burden",
+         "Govt_Spending" = "Gov't Spending",
+         "Fiscal_Health" = "Fiscal Health",
+         "Business_Freedom" = "Business Freedom",
+         "Labor_Freedom" = "Labor Freedom",
+         "Monetary_Freedom" = "Monetary Freedom", 
+         "Trade_Freedom" = "Trade Freedom",
+         "Investment_Freedom" = "Investment Freedom",
+         "Financial_Freedom" = "Financial Freedom",
+         "Tariff_Rate" = "Tariff Rate (%)",
+         "Income_Tax_Rate" = "Income Tax Rate (%)",
+         "Corporate_Tax_Rate" = "Corporate Tax Rate (%)",
+         "Tax_Burden_percent_of_GDP" = "Tax Burden % of GDP",
+         "Govt_Expenditure_percent_of_GDP" = "Gov't Expenditure % of GDP",
+         "Population_Millions" = "Population (Millions)",
+         "GDP_Billions_PPP" = "GDP (Billions, PPP)",
+         "GDP_Growth_Rate" = "GDP Growth Rate (%)",
+         "Five_Year_GDP_Growth_Rate" = "5 Year GDP Growth Rate (%)",
+         "GDP_per_Capita_PPP" = "GDP per Capita (PPP)", 
+         "Unemployment_rate" = "Unemployment (%)",
+         "Inflation_rate" = "Inflation (%)",
+         "FDI_Inflow_Millions" = "FDI Inflow (Millions)",
+         "Public_Debt_percent_of_GDP" = "Public Debt (% of GDP)") %>%
+  mutate(GDP_Billions_PPP = stringr::str_replace(GDP_Billions_PPP, "\\$", ""),
+         GDP_per_Capita_PPP = stringr::str_replace(GDP_per_Capita_PPP, "\\$", ""),
+        GDP_Billions_PPP = str_replace_all(GDP_Billions_PPP, "," , ""),
+        GDP_per_Capita_PPP = str_replace_all(GDP_per_Capita_PPP, "," , ""),
+        FDI_Inflow_Millions= str_replace_all(FDI_Inflow_Millions, "," , ""),
+        Population_Millions = str_replace_all(Population_Millions, "," , "")) %>%
+  mutate_at(2:21, as.numeric) %>%
+  mutate_at(23:31, as.numeric) %>%
+  select(-(Country)) %>%
+  rename("Country" = "Country_Name") %>%
+  mutate("Tariff_Rate" = Tariff_Rate / 100,
+         "Income_Tax_Rate" = Income_Tax_Rate/100,
+         "Tax_Burden_percent_of_GDP" = Tax_Burden_percent_of_GDP/100,
+         "Corporate_Tax_Rate" = Corporate_Tax_Rate/100,
+         "Govt_Expenditure_percent_of_GDP" = Govt_Expenditure_percent_of_GDP/100,
+         "Five_Year_GDP_Growth_Rate" = Five_Year_GDP_Growth_Rate/100,
+         "Inflation_rate" = Inflation_rate/100,
+         "Public_Debt_percent_of_GDP" = Public_Debt_percent_of_GDP/100,
+         "Unemployment_rate" = Unemployment_rate/100) %>%
+  arrange(World_Rank)
+  
+
+head(EFI2)
+
+unique(EFI2$Business_Freedom)
+  
+  
+
+
+  
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
